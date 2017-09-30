@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Sensors.Dht;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Windows.Devices.Gpio;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,9 +25,55 @@ namespace IOTCore_DHT11
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private GpioPin dhtPin = null;
+        private IDht dht = null;
+        private DhtReading dhtReading = new DhtReading();
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            Loaded += MainPage_Loaded;
+
+
+
+        }
+
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Setup();
+
+            Loop();
+        }
+
+        private void Setup()
+        {
+            GpioController gpio = GpioController.GetDefault();
+
+            if(gpio == null)
+            {
+                dhtPin = null;
+                return;
+            }
+
+            dhtPin = gpio.OpenPin(5);
+            dht = new Dht11(dhtPin, GpioPinDriveMode.Input);
+
+        }
+
+        private async void Loop()
+        {
+            while (true)
+            {
+                dhtReading = await dht.GetReadingAsync().AsTask();
+                dataBlock.Text = dhtReading.Humidity.ToString() + " : " + dhtReading.Temperature.ToString();
+                //await Task.Delay(1000);
+            }
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

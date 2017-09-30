@@ -8,6 +8,11 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <StackPanel VerticalAlignment="Center">
+            <TextBlock x:Name="dataBlock"
+                       HorizontalAlignment="Center"></TextBlock>
+            <Button x:Name="StartButton"
+                    Click="StartButton_Click">!측정시작!</Button>
+        </StackPanel>
     </Grid>
 </Page>
