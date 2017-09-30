@@ -29,21 +29,28 @@ namespace IOTCore_DHT11
         private IDht dht = null;
         private DhtReading dhtReading = new DhtReading();
 
+        private DispatcherTimer timer = new DispatcherTimer();
+
         public MainPage()
         {
             this.InitializeComponent();
 
-            Loaded += MainPage_Loaded;
-
-
-
-        }
-
-        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
-        {
             Setup();
 
-            Loop();
+            Loaded += MainPage_Loaded;
+            timer.Tick += Timer_Tick;
+        }
+
+        private async void Timer_Tick(object sender, object e)
+        {
+            dhtReading = await dht.GetReadingAsync().AsTask();
+            //dataBlock.Text = dhtReading.Humidity.ToString() + " : " + dhtReading.Temperature.ToString();
+            await Task.Delay(1000);
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Loop();
         }
 
         private void Setup()
@@ -67,7 +74,7 @@ namespace IOTCore_DHT11
             {
                 dhtReading = await dht.GetReadingAsync().AsTask();
                 dataBlock.Text = dhtReading.Humidity.ToString() + " : " + dhtReading.Temperature.ToString();
-                //await Task.Delay(1000);
+                await Task.Delay(1000);
             }
         }
 
