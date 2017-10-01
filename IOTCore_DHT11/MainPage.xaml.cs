@@ -27,15 +27,15 @@ namespace IOTCore_DHT11
     {
         
         private GpioPin dhtPin;
-        private IDht dht;
+        private Dht11 dht;
 
         //private DispatcherTimer timer = new DispatcherTimer();
-        
 
-        private const byte ledPin = 5;
-        private GpioPin pin;
 
-        private UInt16 duty = 1000;
+        //private const byte ledPin = 5;
+        //private GpioPin pin;
+
+        //private UInt16 duty = 1000;
 
         public MainPage()
         {
@@ -70,32 +70,36 @@ namespace IOTCore_DHT11
         {
             //// 기존의 구문 ////
 
-            //GpioController gpio = GpioController.GetDefault();
+            GpioController gpio = GpioController.GetDefault();
 
-            //if(gpio == null)
-            //{
-            //    dhtPin = null;
-            //    return;
-            //}
+            if (gpio == null)
+            {
+                dhtPin = null;
+                return;
+            }
 
-            //dhtPin = gpio.OpenPin(5);
+            dhtPin = gpio.OpenPin(5);
+            dhtPin.SetDriveMode(GpioPinDriveMode.Input);
+            
+            //// 이 부분도 이상함 ////
+            
             //dht = new Dht11(dhtPin, GpioPinDriveMode.Input);
 
             //// 프로젝트가 이상한지 테스트하기 위해 작성한 구문 ////
 
             /* 정상동작 */
 
-            var gpio = GpioController.GetDefault();
+            //var gpio = GpioController.GetDefault();
 
-            if (gpio == null)
-            {
-                pin = null;
-                return;
-            }
+            //if (gpio == null)
+            //{
+            //    pin = null;
+            //    return;
+            //}
 
-            pin = gpio.OpenPin(ledPin);
-            pin.SetDriveMode(GpioPinDriveMode.Output);
-            pin.Write(GpioPinValue.High);
+            //pin = gpio.OpenPin(ledPin);
+            //pin.SetDriveMode(GpioPinDriveMode.Output);
+            //pin.Write(GpioPinValue.High);
 
             /////////////////////////////////////////////////////////
         }
@@ -103,14 +107,20 @@ namespace IOTCore_DHT11
         private async void Loop()
         {
             //// 이 생성자를 생성하는 순간 에러가 났다 ////
-            DhtReading dhtReading = new DhtReading();
+
+            //DhtReading dhtReading;
 
             //// 기존의 구문 ////
-            
+
             //while (true)
             //{
             //    dhtReading = await dht.GetReadingAsync().AsTask();
-            //    dataBlock.Text = dhtReading.Humidity.ToString() + " : " + dhtReading.Temperature.ToString();
+
+            //    double humidity = dhtReading.Humidity;
+            //    double temperature = dhtReading.Temperature;
+
+            //    dataBlock.Text = humidity.ToString() + " : " + temperature.ToString();
+
             //    await Task.Delay(1000);
             //}
 
@@ -118,13 +128,13 @@ namespace IOTCore_DHT11
 
             /* 정상동작 */
 
-            while (true)
-            {
-                pin.Write(GpioPinValue.Low);
-                await Task.Delay(duty);
-                pin.Write(GpioPinValue.High);
-                await Task.Delay(duty);
-            }
+            //while (true)
+            //{
+            //    pin.Write(GpioPinValue.Low);
+            //    await Task.Delay(duty);
+            //    pin.Write(GpioPinValue.High);
+            //    await Task.Delay(duty);
+            //}
             /////////////////////////////////////////////////////////
         }
 
